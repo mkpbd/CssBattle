@@ -37,5 +37,32 @@
     <div class="bg">
       <div class="circle"></div>
     </div>
+
+
+    <script>
+        const user = {
+          name: 'kamal',
+          age: 445,
+          make(){
+            console.log("we make money from online ");
+          }
+
+        }
+
+
+        const user2 = {
+          arr:['one','two','three','four','five', 'six','seven']
+        };
+
+        user?.make();
+
+        user2?.make?.();
+        console.log(user2?.abc)
+
+        console.log(user2?.arr?.[1]);
+        console.log(user2?.arr?.[10]);
+
+
+    </script>
   </body>
 </html>
