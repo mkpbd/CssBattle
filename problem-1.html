@@ -9,14 +9,15 @@
       .bg {
         width: 400px;
         height: 300px;
-        background: #d669ec;
+         background: #d669ec; 
+        /* background: url("../images/problem-one.png"); */
         position: absolute;
         top: 0;
         left: 0;
       }
       .parentItem {
         display: grid;
-        grid-template-columns: 30px 30px 30px 30px 30px 30px;
+        grid-template-columns: repeat(6, 32px);
         gap: 20px;
         justify-content: center;
         height: 100%;
@@ -25,49 +26,77 @@
 
       .item {
         height: 80px;
-        background-color: white;
+        background-color: blue;
         position: relative;
       }
       .item::before {
-        width: 30px;
+        width: 32px;
         content: "";
-        background: white;
-        height: 10px;
+        background: blue;
+        height: 11px;
         position: absolute;
-        top: -20px;
+        top: -16px;
       }
 
       .item::after {
-        width: 30px;
+        width: 32px;
         content: "";
-        background: white;
-        height: 10px;
+        background: blue;
+        height: 11px;
         position: absolute;
         bottom: -20px;
       }
+      .item.item-1 {
+        top: 4px;
+        left: 7px;
+        height: 82px;
+      }
+      .item.item-1:after {
+    content: "";
+    bottom: -19px;
+    left: 0px;
+ 
+}
+      .item.item-1::before {
+        content: "";
+        top: -20px;
+        height: 11px;
+      }
 
       .item-2 {
-        height: 65px;
-        align-self: cent;
-        margin-top: 20px;
-      }
-      .item-3 {
-        height: 90px;
-        align-self: cent;
-        margin-top: -10px;
-      }
+    height: 61px;
+    align-self: center;
+    margin-top: 28px;
+    left: 4px;
+}
+.item-3 {
+    height: 90px;
+    align-self: cent;
+    margin-top: -2px;
+    left: 3px;
+}
 
-      .item-4 {
-        height: 60px;
-        align-self: cent;
-        margin-top: 20px;
-      }
+.item-4 {
+    height: 61px;
+    align-self: cent;
+    margin-top: 28px;
+}
+.item-5 {
+    top: 4px;
+    left: -1px;
+    height: 81px;
+}
 
-      .item-6 {
-        height: 90px;
-        align-self: cent;
-        margin-top: -10px;
-      }
+.item-6 {
+    height: 90px;
+    align-self: cent;
+    margin-top: -2px;
+    left: -3px;
+}
+
+.item-2:before, .item-3:before, .item-4:before, .item-5:before, .item-6:before{
+    top: -20px;
+}
     </style>
   </head>
   <body>
