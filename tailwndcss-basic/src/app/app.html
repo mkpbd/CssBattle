@@ -1,22 +1,120 @@
-<div class="flex max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/5 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+<div
+  class="flex max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/5 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
   <img class="size-12 shrink-0" src="../../favicon.ico" alt="ChitChat Logo" />
   <div>
-    <div class="text-xl font-medium text-green-500 dark:text-white">ChitChat</div>
+    <div
+      class="text-xl font-medium text-green-500 dark:text-white">ChitChat</div>
     <p class="text-gray-500 dark:text-gray-400">You have a new message!</p>
-    <button class="bg-sky-500 p-2 text-white rounded-lg mt-2 hover:bg-yellow-400 cursor-pointer hover:text-black  shadow-lg">Click Me</button>
+    <button
+      class="bg-sky-500 p-2 text-white rounded-lg mt-2 hover:bg-yellow-400 cursor-pointer hover:text-black  shadow-lg">Click
+      Me</button>
   </div>
 </div>
 
 <!-- out line -->
 
-<button class="bg-violet-500 mt-3 rounded-2xl text-white cursor-pointer px-4 py-1 hover:bg-violet-600 focus:outline-2 focus:outline-offset-2 focus:outline-violet-500 active:bg-violet-700">
+<button
+  class="bg-violet-500 mt-3 rounded-2xl text-white cursor-pointer px-4 py-1 hover:bg-violet-600 focus:outline-2 focus:outline-offset-2 focus:outline-violet-500 active:bg-violet-700">
   Save changes
 </button>
 
-<blockquote class="text-center text-2xl font-semibold text-gray-900 italic dark:text-white">
+<blockquote
+  class="text-center text-2xl font-semibold text-gray-900 italic dark:text-white">
   When you look
-  <span class="relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-pink-500">
+  <span
+    class="relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-pink-500">
     <span class="relative text-white dark:text-gray-950">annoyed</span>
   </span>
   all the time, people think that you're busy.
 </blockquote>
+
+<input
+  class="placeholder:text-gray-500 placeholder:italic border-2 rounded-lg  border-amber-400 text-blue-800 px-3"
+  placeholder="Search for anything..."
+  type="text"
+  name="search" />
+
+<div>
+  <input
+    type="file"
+    class="file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-violet-700 hover:file:bg-violet-100 dark:file:bg-violet-600 dark:file:text-violet-100 dark:hover:file:bg-violet-500" />
+
+  <ul role="list"
+    class="list-disc marker:text-sky-400 outline-2 outline-green-400">
+    <li>5 cups chopped Porcini mushrooms</li>
+    <li>1/2 cup of olive oil</li>
+    <li>3lb of celery</li>
+  </ul>
+
+</div>
+
+<div>
+  <div class="selection:bg-fuchsia-300 selection:text-fuchsia-900">
+    <p>
+      So I started to walk into the water. I won't lie to you boys, I was
+      terrified. But I pressed on, and as I made my
+      way past the breakers a strange calm came over me. I don't know if it was
+      divine intervention or the kinship of all
+      living things but I tell you Jerry at that moment, I <em>was</em> a marine
+      biologist.
+    </p>
+  </div>
+
+  <div class="text-gray-700">
+    <p
+      class="first-letter:float-left first-letter:mr-3 first-letter:text-7xl first-letter:font-bold first-letter:text-gray-900 first-line:tracking-widest first-line:uppercase">
+      Well, let me tell you something, funny boy. Y'know that little stamp, the
+      one that says "New York Public Library"?
+    </p>
+    <p class="mt-6">Well that may not mean anything to you, but that means a lot
+      to me. One whole hell of a lot.</p>
+  </div>
+
+</div>
+
+<div>
+  <!-- Using `motion-reduce` can mean lots of "undoing" styles -->
+  <button
+    class="bg-teal-300 px-3 py-1 rounded-lg transition hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+    Save changes
+  </button>
+  <!-- Using `motion-safe` is less code in these situations -->
+  <button class="motion-safe:transition motion-safe:hover:-translate-x-0.5">Save
+    changes</button>
+
+</div>
+
+<div>
+    <input type="checkbox" class="has-checked:bg-amber-700 has-checked:disabled:">
+</div>
+
+
+<label>
+  <input type="radio" class="appearance-none forced-colors:appearance-auto" />
+  <p class="hidden forced-colors:block">Cyan</p>
+  <div class="bg-cyan-200 forced-colors:hidden "></div>
+  <div class="bg-cyan-500 forced-colors:hidden "></div>
+</label>
+
+
+<fieldset aria-label="Choose a memory option">
+  <div class="flex items-center justify-between">
+    <div>RAM</div>
+    <a href="#"> See performance specs </a>
+  </div>
+  <div class="mt-4 grid grid-cols-6 gap-2 pointer-coarse:mt-6 pointer-coarse:grid-cols-3 pointer-coarse:gap-4">
+    <label class="p-2 pointer-coarse:p-4 ...">
+      <input type="radio" name="memory-option" value="4 GB" className="sr-only" />
+      <span>4 GB</span>
+    </label>
+    <!-- ... -->
+  </div>
+</fieldset>
+
+
+<details class="border border-transparent open:border-black/10 open:bg-gray-100 ..." open>
+  <summary class="text-sm leading-6 font-semibold text-gray-900 select-none">Why do they call it Ovaltine?</summary>
+  <div class="mt-3 text-sm leading-6 text-gray-600">
+    <p>The mug is round. The jar is round. They should call it Roundtine.</p>
+  </div>
+</details>
