@@ -1,1 +1,40 @@
 @import "tailwindcss";/* You can add global styles to this file, and also import other style files */
+
+@theme {
+  --tab-size-2: 2;
+  --tab-size-4: 4;
+  --tab-size-github: 8;
+}
+.my-custom-style{
+    background:green;
+    padding:20px
+}
+
+@layer base{
+  h1 { font-size: 60px;}
+}
+
+@layer components{
+  .card{
+     background-color: var(--color-blue-500);
+    border-radius: var(--radius-lg);
+    padding: --spacing(6);
+    box-shadow: var(--shadow-xl);
+  }
+}
+/* .my-element {
+  background: white;
+  @variant dark {
+    background: black;
+  }
+} */
+
+@utility content-auto{
+  content-visibility:auto;
+}
+
+@utility scrollbar-hidden {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
