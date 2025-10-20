@@ -1,19 +1,24 @@
 @import "tailwindcss";/* You can add global styles to this file, and also import other style files */
 
+ /* theme is a root of  custom variable where  css :root  but we use  @theme for tailwind csss */
 @theme {
   --tab-size-2: 2;
   --tab-size-4: 4;
   --tab-size-github: 8;
 }
+
+/* custom  class without using  tailwind css */
 .my-custom-style{
     background:green;
     padding:20px
 }
 
+/* utility class like  new class  or html tage heare  */
 @layer base{
   h1 { font-size: 60px;}
 }
 
+/* component base like  class where some utility  add or custom design  heare */
 @layer components{
   .card{
      background-color: var(--color-blue-500);
