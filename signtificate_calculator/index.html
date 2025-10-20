@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .calculator {
+            background: #1e1e2e;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .display {
+            background: #2a2a3e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .previous-operand {
+            color: #888;
+            font-size: 18px;
+            text-align: right;
+            min-height: 25px;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .current-operand {
+            color: #fff;
+            font-size: 32px;
+            text-align: right;
+            font-weight: 500;
+            min-height: 40px;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: #fff;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .number {
+            background: #3a3a4e;
+        }
+
+        .number:hover {
+            background: #4a4a5e;
+        }
+
+        .operator {
+            background: #667eea;
+        }
+
+        .operator:hover {
+            background: #5568d3;
+        }
+
+        .function {
+            background: #2d4059;
+            font-size: 14px;
+        }
+
+        .function:hover {
+            background: #3d5069;
+        }
+
+        .equals {
+            background: #48bb78;
+            grid-column: span 2;
+        }
+
+        .equals:hover {
+            background: #38a169;
+        }
+
+        .clear {
+            background: #f56565;
+        }
+
+        .clear:hover {
+            background: #e53e3e;
+        }
+
+        .span-2 {
+            grid-column: span 2;
+        }
+
+        .mode-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .mode-toggle h2 {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .toggle-btn {
+            background: #667eea;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .error {
+            color: #f56565;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="mode-toggle">
+            <h2>Scientific Calculator</h2>
+            <button class="toggle-btn" onclick="toggleAngleMode()">
+                <span id="angleMode">DEG</span>
+            </button>
+        </div>
+        <div class="display">
+            <div class="previous-operand" id="previousOperand"></div>
+            <div class="current-operand" id="currentOperand">0</div>
+        </div>
+        <div class="buttons">
+            <button class="function" onclick="calculateFunction('sin')">sin</button>
+            <button class="function" onclick="calculateFunction('cos')">cos</button>
+            <button class="function" onclick="calculateFunction('tan')">tan</button>
+            <button class="function" onclick="calculateFunction('log')">log</button>
+            <button class="function" onclick="calculateFunction('ln')">ln</button>
+            
+            <button class="function" onclick="calculateFunction('sqrt')">√</button>
+            <button class="function" onclick="appendNumber('(')">(</button>
+            <button class="function" onclick="appendNumber(')')">)</button>
+            <button class="operator" onclick="chooseOperator('**')">x<sup>y</sup></button>
+            <button class="clear" onclick="clear()">AC</button>
+            
+            <button class="function" onclick="calculateFunction('pi')">π</button>
+            <button class="function" onclick="calculateFunction('e')">e</button>
+            <button class="operator" onclick="chooseOperator('%')">%</button>
+            <button class="operator" onclick="chooseOperator('/')">/</button>
+            <button class="clear" onclick="deleteNumber()">DEL</button>
+            
+            <button class="number" onclick="appendNumber('7')">7</button>
+            <button class="number" onclick="appendNumber('8')">8</button>
+            <button class="number" onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="chooseOperator('*')">×</button>
+            <button class="function" onclick="calculateFunction('factorial')">n!</button>
+            
+            <button class="number" onclick="appendNumber('4')">4</button>
+            <button class="number" onclick="appendNumber('5')">5</button>
+            <button class="number" onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="chooseOperator('-')">-</button>
+            <button class="function" onclick="calculateFunction('square')">x²</button>
+            
+            <button class="number" onclick="appendNumber('1')">1</button>
+            <button class="number" onclick="appendNumber('2')">2</button>
+            <button class="number" onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="chooseOperator('+')">+</button>
+            <button class="function" onclick="calculateFunction('inverse')">1/x</button>
+            
+            <button class="number" onclick="appendNumber('0')">0</button>
+            <button class="number" onclick="appendNumber('.')">.</button>
+            <button class="function" onclick="toggleSign()">+/-</button>
+            <button class="equals" onclick="compute()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentOperand = '0';
+        let previousOperand = '';
+        let operation = null;
+        let shouldResetScreen = false;
+        let angleMode = 'DEG';
+
+        const currentOperandElement = document.getElementById('currentOperand');
+        const previousOperandElement = document.getElementById('previousOperand');
+
+        function updateDisplay() {
+            currentOperandElement.textContent = currentOperand;
+            if (operation != null) {
+                previousOperandElement.textContent = `${previousOperand} ${operation}`;
+            } else {
+                previousOperandElement.textContent = previousOperand;
+            }
+        }
+
+        function appendNumber(number) {
+            if (currentOperand === '0' || shouldResetScreen) {
+                currentOperand = number;
+                shouldResetScreen = false;
+            } else {
+                if (number === '.' && currentOperand.includes('.')) return;
+                currentOperand += number;
+            }
+            updateDisplay();
+        }
+
+        function chooseOperator(op) {
+            if (currentOperand === '') return;
+            if (previousOperand !== '') {
+                compute();
+            }
+            operation = op;
+            previousOperand = currentOperand;
+            currentOperand = '';
+            updateDisplay();
+        }
+
+        function compute() {
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            
+            if (isNaN(prev) || isNaN(current)) return;
+            
+            try {
+                switch (operation) {
+                    case '+':
+                        computation = prev + current;
+                        break;
+                    case '-':
+                        computation = prev - current;
+                        break;
+                    case '*':
+                        computation = prev * current;
+                        break;
+                    case '/':
+                        if (current === 0) throw new Error('Cannot divide by zero');
+                        computation = prev / current;
+                        break;
+                    case '%':
+                        computation = prev % current;
+                        break;
+                    case '**':
+                        computation = Math.pow(prev, current);
+                        break;
+                    default:
+                        return;
+                }
+                
+                currentOperand = String(Math.round(computation * 1000000000) / 1000000000);
+                operation = null;
+                previousOperand = '';
+                shouldResetScreen = true;
+            } catch (error) {
+                currentOperand = 'Error';
+                currentOperandElement.classList.add('error');
+                setTimeout(() => {
+                    currentOperandElement.classList.remove('error');
+                    clear();
+                }, 1500);
+            }
+            updateDisplay();
+        }
+
+        function clear() {
+            currentOperand = '0';
+            previousOperand = '';
+            operation = null;
+            shouldResetScreen = false;
+            updateDisplay();
+        }
+
+        function deleteNumber() {
+            if (currentOperand.length === 1) {
+                currentOperand = '0';
+            } else {
+                currentOperand = currentOperand.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        function toggleSign() {
+            if (currentOperand === '0') return;
+            currentOperand = String(parseFloat(currentOperand) * -1);
+            updateDisplay();
+        }
+
+        function toRadians(degrees) {
+            return degrees * (Math.PI / 180);
+        }
+
+        function calculateFunction(func) {
+            const num = parseFloat(currentOperand);
+            let result;
+            
+            try {
+                switch(func) {
+                    case 'sin':
+                        result = angleMode === 'DEG' ? Math.sin(toRadians(num)) : Math.sin(num);
+                        break;
+                    case 'cos':
+                        result = angleMode === 'DEG' ? Math.cos(toRadians(num)) : Math.cos(num);
+                        break;
+                    case 'tan':
+                        result = angleMode === 'DEG' ? Math.tan(toRadians(num)) : Math.tan(num);
+                        break;
+                    case 'log':
+                        if (num <= 0) throw new Error('Invalid input');
+                        result = Math.log10(num);
+                        break;
+                    case 'ln':
+                        if (num <= 0) throw new Error('Invalid input');
+                        result = Math.log(num);
+                        break;
+                    case 'sqrt':
+                        if (num < 0) throw new Error('Invalid input');
+                        result = Math.sqrt(num);
+                        break;
+                    case 'square':
+                        result = num * num;
+                        break;
+                    case 'inverse':
+                        if (num === 0) throw new Error('Cannot divide by zero');
+                        result = 1 / num;
+                        break;
+                    case 'factorial':
+                        if (num < 0 || !Number.isInteger(num)) throw new Error('Invalid input');
+                        result = factorial(num);
+                        break;
+                    case 'pi':
+                        result = Math.PI;
+                        break;
+                    case 'e':
+                        result = Math.E;
+                        break;
+                }
+                
+                currentOperand = String(Math.round(result * 1000000000) / 1000000000);
+                shouldResetScreen = true;
+            } catch (error) {
+                currentOperand = 'Error';
+                currentOperandElement.classList.add('error');
+                setTimeout(() => {
+                    currentOperandElement.classList.remove('error');
+                    clear();
+                }, 1500);
+            }
+            updateDisplay();
+        }
+
+        function factorial(n) {
+            if (n > 170) throw new Error('Number too large');
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        function toggleAngleMode() {
+            angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG';
+            document.getElementById('angleMode').textContent = angleMode;
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
