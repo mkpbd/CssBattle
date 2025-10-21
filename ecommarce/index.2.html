@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Your Electronics Destination</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .cart-badge {
+            animation: bounce 0.3s ease;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .toast {
+            animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-blue-600">TechStore</h1>
+            <div class="flex items-center gap-4">
+                <button id="cartBtn" class="relative bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="hidden md:inline">Cart</span>
+                        <span id="cartCount" class="cart-badge bg-red-500 text-white rounded-full px-2 py-1 text-xs font-bold">0</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar - Categories -->
+            <aside class="lg:w-64 w-full">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800">Categories</h2>
+                    <ul id="categoryList" class="space-y-2">
+                        <li>
+                            <button class="category-btn w-full text-left px-4 py-2 rounded-lg hover:bg-blue-50 transition bg-blue-100 text-blue-600 font-semibold" data-category="all">
+                                All Products
+                            </button>
+                        </li>
+                        <li>
+                            <button class="category-btn w-full text-left px-4 py-2 rounded-lg hover:bg-blue-50 transition text-gray-700" data-category="laptops">
+                                Laptops
+                            </button>
+                        </li>
+                        <li>
+                            <button class="category-btn w-full text-left px-4 py-2 rounded-lg hover:bg-blue-50 transition text-gray-700" data-category="smartphones">
+                                Smartphones
+                            </button>
+                        </li>
+                        <li>
+                            <button class="category-btn w-full text-left px-4 py-2 rounded-lg hover:bg-blue-50 transition text-gray-700" data-category="headphones">
+                                Headphones
+                            </button>
+                        </li>
+                        <li>
+                            <button class="category-btn w-full text-left px-4 py-2 rounded-lg hover:bg-blue-50 transition text-gray-700" data-category="accessories">
+                                Accessories
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1">
+                <!-- Products Page -->
+                <div id="productsPage">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Our Products</h2>
+                        <span id="productCount" class="text-gray-600"></span>
+                    </div>
+                    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                </div>
+
+                <!-- Cart Page -->
+                <div id="cartPage" class="hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Shopping Cart</h2>
+                        <button id="backToProducts" class="text-blue-600 hover:text-blue-800 font-semibold">
+                            ← Continue Shopping
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <div id="cartItems" class="space-y-4"></div>
+                            <div id="emptyCart" class="hidden bg-white rounded-lg shadow-md p-12 text-center">
+                                <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">Your cart is empty</h3>
+                                <p class="text-gray-600">Add some products to get started!</p>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                                <h3 class="text-xl font-bold mb-4 text-gray-800">Order Summary</h3>
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex justify-between text-gray-600">
+                                        <span>Subtotal</span>
+                                        <span id="subtotal">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-600">
+                                        <span>Shipping</span>
+                                        <span id="shipping">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-600">
+                                        <span>Tax (10%)</span>
+                                        <span id="tax">$0.00</span>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="flex justify-between text-xl font-bold text-gray-800">
+                                        <span>Total</span>
+                                        <span id="total">$0.00</span>
+                                    </div>
+                                </div>
+                                <button id="checkoutBtn" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
+                                    Proceed to Checkout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkout Page -->
+                <div id="checkoutPage" class="hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Checkout</h2>
+                        <button id="backToCart" class="text-blue-600 hover:text-blue-800 font-semibold">
+                            ← Back to Cart
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <h3 class="text-xl font-semibold mb-4">Shipping Information</h3>
+                                <form id="checkoutForm" class="space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-gray-700 font-medium mb-2">First Name</label>
+                                            <input type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-gray-700 font-medium mb-2">Last Name</label>
+                                            <input type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 font-medium mb-2">Email</label>
+                                        <input type="email" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 font-medium mb-2">Address</label>
+                                        <input type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-gray-700 font-medium mb-2">City</label>
+                                            <input type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-gray-700 font-medium mb-2">State</label>
+                                            <input type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-gray-700 font-medium mb-2">ZIP Code</label>
+                                            <input type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                                        Place Order
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                                <h3 class="text-xl font-bold mb-4 text-gray-800">Order Summary</h3>
+                                <div id="checkoutItems" class="space-y-3 mb-6 max-h-64 overflow-y-auto"></div>
+                                <hr class="my-4">
+                                <div class="space-y-2">
+                                    <div class="flex justify-between text-gray-600">
+                                        <span>Subtotal</span>
+                                        <span id="checkoutSubtotal">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-600">
+                                        <span>Shipping</span>
+                                        <span id="checkoutShipping">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-600">
+                                        <span>Tax</span>
+                                        <span id="checkoutTax">$0.00</span>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="flex justify-between text-xl font-bold text-gray-800">
+                                        <span>Total</span>
+                                        <span id="checkoutTotal">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Product Data
+        const products = [
+            {id: 1, name: 'MacBook Pro 14"', category: 'laptops', price: 1999, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop'},
+            {id: 2, name: 'Dell XPS 13', category: 'laptops', price: 1299, image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&h=300&fit=crop'},
+            {id: 3, name: 'iPhone 15 Pro', category: 'smartphones', price: 999, image: 'https://images.unsplash.com/photo-1592286927505-2fd2bd1e2c30?w=400&h=300&fit=crop'},
+            {id: 4, name: 'Samsung Galaxy S24', category: 'smartphones', price: 899, image: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=300&fit=crop'},
+            {id: 5, name: 'Sony WH-1000XM5', category: 'headphones', price: 399, image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&h=300&fit=crop'},
+            {id: 6, name: 'AirPods Pro', category: 'headphones', price: 249, image: 'https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=400&h=300&fit=crop'},
+            {id: 7, name: 'Magic Mouse', category: 'accessories', price: 79, image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop'},
+            {id: 8, name: 'USB-C Hub', category: 'accessories', price: 49, image: 'https://images.unsplash.com/photo-1625948515291-69613efd103f?w=400&h=300&fit=crop'},
+            {id: 9, name: 'Lenovo ThinkPad', category: 'laptops', price: 1099, image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&h=300&fit=crop'},
+            {id: 10, name: 'Google Pixel 8', category: 'smartphones', price: 699, image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&h=300&fit=crop'},
+            {id: 11, name: 'Bose QuietComfort', category: 'headphones', price: 349, image: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=300&fit=crop'},
+            {id: 12, name: 'Wireless Charger', category: 'accessories', price: 29, image: 'https://images.unsplash.com/photo-1591290619762-c588f92d38b5?w=400&h=300&fit=crop'}
+        ];
+
+        // State
+        let cart = [];
+        let currentCategory = 'all';
+        let currentPage = 'products';
+
+        // Initialize
+        renderProducts();
+        updateCartCount();
+
+        // Event Listeners
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                currentCategory = e.target.dataset.category;
+                document.querySelectorAll('.category-btn').forEach(b => {
+                    b.classList.remove('bg-blue-100', 'text-blue-600', 'font-semibold');
+                    b.classList.add('text-gray-700');
+                });
+                e.target.classList.add('bg-blue-100', 'text-blue-600', 'font-semibold');
+                e.target.classList.remove('text-gray-700');
+                renderProducts();
+            });
+        });
+
+        document.getElementById('cartBtn').addEventListener('click', () => {
+            showPage('cart');
+        });
+
+        document.getElementById('backToProducts').addEventListener('click', () => {
+            showPage('products');
+        });
+
+        document.getElementById('backToCart').addEventListener('click', () => {
+            showPage('cart');
+        });
+
+        document.getElementById('checkoutBtn').addEventListener('click', () => {
+            showPage('checkout');
+        });
+
+        document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Order placed successfully! Thank you for your purchase.');
+            cart = [];
+            updateCartCount();
+            showPage('products');
+        });
+
+        // Functions
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const filteredProducts = currentCategory === 'all' 
+                ? products 
+                : products.filter(p => p.category === currentCategory);
+            
+            document.getElementById('productCount').textContent = `${filteredProducts.length} products`;
+            
+            grid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-gray-800 mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-3 capitalize">${product.category}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-blue-600">$${product.price}</span>
+                            <button onclick="addToCart(${product.id})" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({...product, quantity: 1});
+            }
+            
+            updateCartCount();
+            showToast(`${product.name} added to cart!`);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartCount();
+            renderCart();
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    renderCart();
+                }
+            }
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+            document.getElementById('cartCount').classList.add('cart-badge');
+            setTimeout(() => {
+                document.getElementById('cartCount').classList.remove('cart-badge');
+            }, 300);
+        }
+
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '';
+                emptyCart.classList.remove('hidden');
+                document.getElementById('checkoutBtn').disabled = true;
+            } else {
+                emptyCart.classList.add('hidden');
+                document.getElementById('checkoutBtn').disabled = false;
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="bg-white rounded-lg shadow-md p-4 flex flex-col sm:flex-row gap-4">
+                        <img src="${item.image}" alt="${item.name}" class="w-full sm:w-24 h-24 object-cover rounded">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg text-gray-800">${item.name}</h3>
+                            <p class="text-blue-600 font-bold">$${item.price}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 w-8 h-8 rounded hover:bg-gray-300">-</button>
+                            <span class="font-semibold w-8 text-center">${item.quantity}</span>
+                            <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 w-8 h-8 rounded hover:bg-gray-300">+</button>
+                            <button onclick="removeFromCart(${item.id})" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 ml-2">Remove</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updateOrderSummary();
+        }
+
+        function updateOrderSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 0 ? (subtotal > 1000 ? 0 : 15) : 0;
+            const tax = subtotal * 0.1;
+            const total = subtotal + shipping + tax;
+            
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('shipping').textContent = shipping === 0 && subtotal > 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+            
+            document.getElementById('checkoutSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('checkoutShipping').textContent = shipping === 0 && subtotal > 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+            document.getElementById('checkoutTax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('checkoutTotal').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function renderCheckoutItems() {
+            document.getElementById('checkoutItems').innerHTML = cart.map(item => `
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-700">${item.name} x${item.quantity}</span>
+                    <span class="font-semibold">$${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            `).join('');
+        }
+
+        function showPage(page) {
+            currentPage = page;
+            document.getElementById('productsPage').classList.add('hidden');
+            document.getElementById('cartPage').classList.add('hidden');
+            document.getElementById('checkoutPage').classList.add('hidden');
+            
+            if (page === 'products') {
+                document.getElementById('productsPage').classList.remove('hidden');
+            } else if (page === 'cart') {
+                document.getElementById('cartPage').classList.remove('hidden');
+                renderCart();
+            } else if (page === 'checkout') {
+                document.getElementById('checkoutPage').classList.remove('hidden');
+                renderCheckoutItems();
+                updateOrderSummary();
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
